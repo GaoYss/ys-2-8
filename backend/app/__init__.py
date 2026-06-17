@@ -7,6 +7,7 @@ from .routes.courses import courses_bp
 from .routes.health import health_bp
 from .routes.schedule import schedule_bp
 from .routes.stats import stats_bp
+from .routes.transfer import transfer_bp
 
 
 def create_app():
@@ -19,5 +20,6 @@ def create_app():
     app.register_blueprint(schedule_bp, url_prefix="/api/schedule")
     app.register_blueprint(attendance_bp, url_prefix="/api/attendance")
     app.register_blueprint(stats_bp, url_prefix="/api/stats")
+    app.register_blueprint(transfer_bp, url_prefix="/api/transfer")
 
     return app

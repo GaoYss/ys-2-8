@@ -1,5 +1,5 @@
 from copy import deepcopy
-from datetime import date
+from datetime import date, datetime
 
 
 class TrainingStore:
@@ -55,6 +55,7 @@ class TrainingStore:
             {"id": 2, "session_id": 1, "student_id": 2, "status": "late"},
             {"id": 3, "session_id": 1, "student_id": 3, "status": "absent"},
         ]
+        self.transfer_requests = []
 
     def next_id(self, collection):
         values = getattr(self, collection)
@@ -67,6 +68,7 @@ class TrainingStore:
                 "courses": self.courses,
                 "schedule": self.schedule,
                 "attendance": self.attendance,
+                "transfer_requests": self.transfer_requests,
             }
         )
 

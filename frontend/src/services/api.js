@@ -36,4 +36,22 @@ export const api = {
   recordAttendance: (payload) =>
     request("/attendance", { method: "POST", body: JSON.stringify(payload) }),
   getHourStats: () => request("/stats/hours"),
+  getTransferRequests: () => request("/transfer"),
+  getTransferRequest: (id) => request(`/transfer/${id}`),
+  createTransferRequest: (payload) =>
+    request("/transfer", { method: "POST", body: JSON.stringify(payload) }),
+  updateTransferRequest: (id, payload) =>
+    request(`/transfer/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+  approveTransferRequest: (id, payload) =>
+    request(`/transfer/${id}/approve`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  rejectTransferRequest: (id, payload) =>
+    request(`/transfer/${id}/reject`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  deleteTransferRequest: (id) =>
+    request(`/transfer/${id}`, { method: "DELETE" }),
 };

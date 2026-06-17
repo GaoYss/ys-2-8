@@ -46,9 +46,22 @@ def enrich_session(session):
         (item for item in store.classes if item["id"] == session["class_id"]), None
     )
     course = next((item for item in store.courses if item["id"] == session["course_id"]), None)
-    return {
+    result = {
         **session,
         "class_name": training_class["name"] if training_class else "未知班级",
         "course_title": course["title"] if course else "未知课程",
         "duration": course["duration"] if course else 0,
     }
+    if session.get("transferred_from"):
+        original_session = next(
+            (item for item in store.schedule if item["id"] == session["transferred_from"]),
+            None,
+        )
+        if original_session:
+            result["original_session"] = {
+                "id": original_session["id"],
+                "date": original_session["date"],
+                "time": original_session["time"],
+                "room": original_session["room"],
+            }
+    return result

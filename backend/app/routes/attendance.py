@@ -8,7 +8,11 @@ attendance_bp = Blueprint("attendance", __name__)
 
 @attendance_bp.get("")
 def list_attendance():
-    return jsonify(store.attendance)
+    result = []
+    for att in store.attendance:
+        enriched = enrich_attendance(att)
+        result.append(enriched)
+    return jsonify(result)
 
 
 @attendance_bp.post("")
@@ -26,7 +30,7 @@ def record_attendance():
 
     if existing:
         existing["status"] = payload.get("status", existing["status"])
-        return jsonify(existing)
+        return jsonify(enrich_attendance(existing))
 
     record = {
         "id": store.next_id("attendance"),
@@ -35,4 +39,29 @@ def record_attendance():
         "status": payload.get("status", "present"),
     }
     store.attendance.append(record)
-    return jsonify(record), 201
+    return jsonify(enrich_attendance(record)), 201
+
+
+def enrich_attendance(att):
+    session = next(
+        (item for item in store.schedule if item["id"] == att["session_id"]), None
+    )
+    result = {**att}
+    if session:
+        if session.get("transferred_from"):
+            original_session = next(
+                (
+                    item
+                    for item in store.schedule
+                    if item["id"] == session["transferred_from"]
+                ),
+                None,
+            )
+            if original_session:
+                result["original_session"] = {
+                    "id": original_session["id"],
+                    "date": original_session["date"],
+                    "time": original_session["time"],
+                    "room": original_session["room"],
+                }
+    return result
