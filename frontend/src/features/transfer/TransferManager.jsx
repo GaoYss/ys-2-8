@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Check,
   X,
@@ -46,6 +46,11 @@ export function TransferManager({
     approver: "",
     comment: "",
   });
+
+  const availableSessions = useMemo(
+    () => schedule.filter((s) => !s.transferred_to),
+    [schedule]
+  );
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -146,7 +151,7 @@ export function TransferManager({
                   required
                 >
                   <option value="">请选择课次</option>
-                  {schedule.map((s) => (
+                  {availableSessions.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.class_name} - {s.course_title} ({s.date} {s.time})
                     </option>

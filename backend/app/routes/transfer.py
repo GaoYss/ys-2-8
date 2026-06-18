@@ -38,6 +38,9 @@ def create_transfer_request():
     if not session:
         return jsonify({"message": "Session not found"}), 404
 
+    if session.get("transferred_to"):
+        return jsonify({"message": "该课次已调课，不能再申请调课"}), 400
+
     pending_request = next(
         (
             item
