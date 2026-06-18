@@ -1,5 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SectionHeader } from "../../components/SectionHeader";
 
 const statusLabels = {
@@ -10,17 +10,29 @@ const statusLabels = {
 };
 
 export function AttendancePanel({ schedule, classes, attendance, studentMap, onRecord }) {
-  const [sessionId, setSessionId] = useState(schedule[0]?.id || "");
+  const validSchedule = useMemo(
+    () => schedule.filter((item) => !item.transferred_to),
+    [schedule]
+  );
+
+  const [sessionId, setSessionId] = useState(validSchedule[0]?.id || "");
   const [studentId, setStudentId] = useState("");
   const [status, setStatus] = useState("present");
 
-  const selectedSession = schedule.find((item) => item.id === Number(sessionId));
+  const selectedSession = validSchedule.find((item) => item.id === Number(sessionId));
   const students = useMemo(() => {
     if (!selectedSession) return [];
     return (
       classes.find((item) => item.id === selectedSession.class_id)?.students || []
     );
   }, [classes, selectedSession]);
+
+  useEffect(() => {
+    const sessionStillValid = validSchedule.some((item) => item.id === Number(sessionId));
+    if (!sessionStillValid && validSchedule.length > 0) {
+      setSessionId(validSchedule[0].id);
+    }
+  }, [validSchedule, sessionId]);
 
   async function submit(event) {
     event.preventDefault();
@@ -39,7 +51,7 @@ export function AttendancePanel({ schedule, classes, attendance, studentMap, onR
         <label>
           课次
           <select value={sessionId} onChange={(event) => setSessionId(event.target.value)}>
-            {schedule.map((item) => (
+            {validSchedule.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.date} · {item.class_name} · {item.course_title}
                 {item.original_session ? " (调课)" : ""}
@@ -89,7 +101,8 @@ export function AttendancePanel({ schedule, classes, attendance, studentMap, onR
             </thead>
             <tbody>
               {attendance.map((record) => {
-                const session = schedule.find((item) => item.id === record.session_id);
+                const session = validSchedule.find((item) => item.id === record.session_id)
+                  || schedule.find((item) => item.id === record.session_id);
                 const student = studentMap.get(record.student_id);
                 const hasTransfer = record.original_session || session?.original_session;
                 return (

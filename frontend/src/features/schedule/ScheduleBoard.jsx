@@ -1,10 +1,15 @@
 import { CalendarPlus } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SectionHeader } from "../../components/SectionHeader";
 
 export function ScheduleBoard({ classes, courses, schedule, onGenerate }) {
   const [classId, setClassId] = useState("");
   const [days, setDays] = useState(8);
+
+  const validSchedule = useMemo(
+    () => schedule.filter((item) => !item.transferred_to),
+    [schedule]
+  );
 
   async function submit(event) {
     event.preventDefault();
@@ -44,7 +49,7 @@ export function ScheduleBoard({ classes, courses, schedule, onGenerate }) {
       <div className="table-panel">
         <SectionHeader eyebrow="Schedule" title="课程表" />
         <div className="schedule-grid">
-          {schedule.map((session) => (
+          {validSchedule.map((session) => (
             <article
               className={`schedule-card ${session.transferred_from ? "transferred" : ""}`}
               key={session.id}
