@@ -42,6 +42,7 @@ export function AttendancePanel({ schedule, classes, attendance, studentMap, onR
             {schedule.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.date} · {item.class_name} · {item.course_title}
+                {item.original_session ? " (调课)" : ""}
               </option>
             ))}
           </select>
@@ -79,25 +80,41 @@ export function AttendancePanel({ schedule, classes, attendance, studentMap, onR
           <table>
             <thead>
               <tr>
-                <th>课程</th>
+                <th>课次</th>
                 <th>学员</th>
                 <th>班级</th>
                 <th>状态</th>
+                <th>调课来源</th>
               </tr>
             </thead>
             <tbody>
               {attendance.map((record) => {
                 const session = schedule.find((item) => item.id === record.session_id);
                 const student = studentMap.get(record.student_id);
+                const hasTransfer = record.original_session || session?.original_session;
                 return (
                   <tr key={record.id}>
-                    <td>{session?.course_title || "未知课程"}</td>
+                    <td>
+                      <strong>{session?.course_title || "未知课程"}</strong>
+                      <small>{session?.date} {session?.time}</small>
+                    </td>
                     <td>{student?.name || "未知学员"}</td>
                     <td>{student?.className || session?.class_name || "-"}</td>
                     <td>
                       <span className={`status-pill ${record.status}`}>
                         {statusLabels[record.status] || record.status}
                       </span>
+                    </td>
+                    <td>
+                      {hasTransfer ? (
+                        <span className="transfer-source">
+                          {(record.original_session || session?.original_session)?.date}{" "}
+                          {(record.original_session || session?.original_session)?.time}{" "}
+                          {(record.original_session || session?.original_session)?.room}
+                        </span>
+                      ) : (
+                        <span className="text-muted">-</span>
+                      )}
                     </td>
                   </tr>
                 );

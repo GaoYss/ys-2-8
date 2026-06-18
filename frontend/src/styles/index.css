@@ -300,6 +300,38 @@ td small {
   padding: 4px 8px;
 }
 
+.schedule-card.transferred {
+  border-left-color: #f59e0b;
+}
+
+.transfer-info {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #e4ecee;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.transfer-label {
+  background: #fff3d6 !important;
+  color: #946200 !important;
+  font-weight: 600;
+}
+
+.transfer-source {
+  background: #fff3d6;
+  color: #946200;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+.text-muted {
+  color: #9aa9ad;
+}
+
 .notice {
   background: #fff8e7;
   border: 1px solid #f0d595;

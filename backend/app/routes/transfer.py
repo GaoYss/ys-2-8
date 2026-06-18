@@ -131,6 +131,8 @@ def approve_transfer_request(request_id):
     }
     store.schedule.append(new_session)
 
+    session["transferred_to"] = new_session["id"]
+
     for att in store.attendance:
         if att["session_id"] == session["id"]:
             att["original_session_id"] = session["id"]

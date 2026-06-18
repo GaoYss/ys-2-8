@@ -9,7 +9,8 @@ schedule_bp = Blueprint("schedule", __name__)
 
 @schedule_bp.get("")
 def list_schedule():
-    return jsonify([enrich_session(item) for item in store.schedule])
+    filtered = [item for item in store.schedule if not item.get("transferred_to")]
+    return jsonify([enrich_session(item) for item in filtered])
 
 
 @schedule_bp.post("/generate")

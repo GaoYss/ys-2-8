@@ -45,7 +45,10 @@ export function ScheduleBoard({ classes, courses, schedule, onGenerate }) {
         <SectionHeader eyebrow="Schedule" title="课程表" />
         <div className="schedule-grid">
           {schedule.map((session) => (
-            <article className="schedule-card" key={session.id}>
+            <article
+              className={`schedule-card ${session.transferred_from ? "transferred" : ""}`}
+              key={session.id}
+            >
               <span>{session.date}</span>
               <h3>{session.course_title}</h3>
               <p>{session.class_name}</p>
@@ -54,6 +57,16 @@ export function ScheduleBoard({ classes, courses, schedule, onGenerate }) {
                 <small>{session.room}</small>
                 <small>{session.teacher}</small>
               </div>
+              {session.original_session && (
+                <div className="transfer-info">
+                  <small className="transfer-label">调课来源</small>
+                  <small>
+                    {session.original_session.date}{" "}
+                    {session.original_session.time}{" "}
+                    {session.original_session.room}
+                  </small>
+                </div>
+              )}
             </article>
           ))}
         </div>
